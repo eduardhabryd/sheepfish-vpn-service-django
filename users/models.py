@@ -50,5 +50,5 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    def __str__(self) -> models.EmailField:
+    def __str__(self) -> str:
         return self.email
