@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br>
+    <h1>VPN Sites
+        <a href="#"
+           class="btn btn-primary link-to-page">
+            Add Site
+        </a>
+    </h1>
+    <form class="d-flex"
+          role="search">
+        {% if search_form %}
+            {{ search_form }}
+            <button class="btn btn-outline-dark me-3"
+                    type="submit">Search
+            </button>
+        {% endif %}
+    </form>
+    <hr>
+    {% for site in site_list %}
+        <div>
+            <p>{{ site.name }}</p>
+            <p>{{ site.url }}</p>
+            <p>{{ site.user }}</p>
+            <p>{{ site.page_views }}</p>
+            <p>{{ site.data_sent }}</p>
+            <p>{{ site.data_received }}</p>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}
