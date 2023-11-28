@@ -1,4 +1,5 @@
 <ul class="sidebar-nav list-group">
-  <li class="list-group-item mt-5"><a href="#">Users</a></li>
-  <li class="list-group-item"><a href="#">Groups</a></li>
+    <li class="list-group-item mt-5"><a href="{% url "vpn_app:index" %}">Dashboard</a></li>
+    <li class="list-group-item">{{ user }}</li>
+    <li class="list-group-item"><a href="#">Account Settings</a></li>
 </ul>
