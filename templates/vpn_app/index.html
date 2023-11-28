@@ -8,13 +8,10 @@
             Add Site
         </a>
     </h1>
-    <form class="d-flex w-75"
-          role="search">
+    <form class="d-flex w-75" role="search">
         {% if search_form %}
             {{ search_form }}
-            <button class="btn btn-outline-dark me-3"
-                    type="submit">Search
-            </button>
+            <button class="btn btn-outline-dark me-3" type="submit">Search</button>
         {% endif %}
     </form>
     <hr class="w-75">
@@ -32,7 +29,8 @@
                 <p class="text-muted">
                     Views: {{ site.page_views }} | Sent: {{ site.data_sent }} MB | Received: {{ site.data_received }} MB
                 </p>
-                <a href="{{ site.url }}" class="btn btn-primary" data-mdb-ripple-init>Go to site</a>
+                <a href="{% url 'vpn_app:site_proxy_without_routes' site.name %}" class="btn btn-primary" data-mdb-ripple-init>Go
+                    to site</a>
             </div>
         </div>
         <br>
