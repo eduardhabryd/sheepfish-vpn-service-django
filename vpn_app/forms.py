@@ -19,3 +19,22 @@ class SiteSearchForm(forms.Form):
             }
         ),
     )
+
+
+class SiteCreateForm(forms.ModelForm):
+    class Meta:
+        model = Site
+        fields = ['name', 'url']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'url': forms.URLInput(attrs={'class': 'form-control'}),
+        }
+
+
+class SiteUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Site
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
