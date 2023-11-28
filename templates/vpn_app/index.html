@@ -3,12 +3,12 @@
 {% block content %}
     <br>
     <h1>VPN Sites
-        <a href="#"
+        <a href="{% url 'vpn_app:add_site' %}"
            class="btn btn-primary link-to-page">
             Add Site
         </a>
     </h1>
-    <form class="d-flex"
+    <form class="d-flex w-75"
           role="search">
         {% if search_form %}
             {{ search_form }}
@@ -17,16 +17,24 @@
             </button>
         {% endif %}
     </form>
-    <hr>
+    <hr class="w-75">
     {% for site in site_list %}
-        <div>
-            <p>{{ site.name }}</p>
-            <p>{{ site.url }}</p>
-            <p>{{ site.user }}</p>
-            <p>{{ site.page_views }}</p>
-            <p>{{ site.data_sent }}</p>
-            <p>{{ site.data_received }}</p>
+        <div class="card w-75">
+            <div class="card-header mt-1">
+                <h5>
+                    {{ site.name }} &nbsp;
+                    <a href="{% url 'vpn_app:update_site' site.pk %}" class="btn btn-sm btn-outline-dark">✏️</a>
+                    <a href="{% url 'vpn_app:delete_site' site.pk %}" class="btn btn-sm btn-outline-danger">❌</a>
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ site.url }}</p>
+                <p class="text-muted">
+                    Views: {{ site.page_views }} | Sent: {{ site.data_sent }} MB | Received: {{ site.data_received }} MB
+                </p>
+                <a href="{{ site.url }}" class="btn btn-primary" data-mdb-ripple-init>Go to site</a>
+            </div>
         </div>
-        <hr>
+        <br>
     {% endfor %}
 {% endblock %}
