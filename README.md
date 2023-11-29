@@ -15,6 +15,10 @@ VPN Site Proxy is a Django web application that enables users to create a person
 3. Build and run the Docker image: `docker-compose up --build`
 4. Access the website at `http://127.0.0.1:8000/`
 
+# 🛠️ Usage
+
+- LOGIN: `admin@admin.com`
+- PASSWORD: `admin`
 
 # 📖 Features
 
@@ -36,11 +40,6 @@ VPN Site Proxy is a Django web application that enables users to create a person
 
 - Track and display data usage statistics, including data sent and received during each session.
 - Monitor the number of page views for each site in the VPN.
-
-# 🛠️ Usage
-
-- LOGIN: `admin@admin.com`
-- PASSWORD: `admin`
 
 # 🪟 DEMO
 
