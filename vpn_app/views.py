@@ -14,19 +14,21 @@ from vpn_app.forms import SiteSearchForm, SiteCreateForm, SiteUpdateForm
 
 class SiteListView(generic.ListView):
     model = Site
-    template_name = 'vpn_app/index.html'
+    template_name = "vpn_app/index.html"
     queryset = Site.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        site_name = self.request.GET.get('site_name')
-        context['search_form'] = SiteSearchForm(initial={'site_name': site_name})
+        site_name = self.request.GET.get("site_name")
+        context["search_form"] = SiteSearchForm(
+            initial={"site_name": site_name}
+        )
         return context
 
     def get_queryset(self):
         form = SiteSearchForm(self.request.GET)
         if form.is_valid():
-            site_name = form.cleaned_data['site_name']
+            site_name = form.cleaned_data["site_name"]
             return Site.objects.filter(name__icontains=site_name)
 
         return self.queryset
@@ -34,9 +36,9 @@ class SiteListView(generic.ListView):
 
 class SiteCreateView(generic.CreateView):
     model = Site
-    template_name = 'vpn_app/add_site.html'
+    template_name = "vpn_app/add_site.html"
     form_class = SiteCreateForm
-    success_url = reverse_lazy('vpn_app:index')
+    success_url = reverse_lazy("vpn_app:index")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -45,15 +47,15 @@ class SiteCreateView(generic.CreateView):
 
 class SiteUpdateView(generic.UpdateView):
     model = Site
-    template_name = 'vpn_app/add_site.html'
+    template_name = "vpn_app/add_site.html"
     form_class = SiteUpdateForm
-    success_url = reverse_lazy('vpn_app:index')
+    success_url = reverse_lazy("vpn_app:index")
 
 
 class SiteDeleteView(generic.DeleteView):
     model = Site
-    template_name = 'vpn_app/delete_site.html'
-    success_url = reverse_lazy('vpn_app:index')
+    template_name = "vpn_app/delete_site.html"
+    success_url = reverse_lazy("vpn_app:index")
 
 
 @csrf_exempt
@@ -64,7 +66,9 @@ def site_proxy(request, user_site_name, routes_on_original_site=""):
         if "/" in user_site_name:
             split_user_site_name = user_site_name.split("/", 1)
             user_site_name = split_user_site_name[0]
-            routes_on_original_site = split_user_site_name[1] + "/" + routes_on_original_site
+            routes_on_original_site = (
+                split_user_site_name[1] + "/" + routes_on_original_site
+            )
 
         site = Site.objects.get(user=request.user, name=user_site_name)
 
@@ -72,35 +76,45 @@ def site_proxy(request, user_site_name, routes_on_original_site=""):
         print(f"Original URL: {original_url}")
 
         response = requests.get(original_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
 
         for tag in soup.find_all(href=True):
-            if tag.name == 'link':
-                url = urljoin(site.url, tag['href'])
-                if tag['href'].startswith('http'):
-                    tag['href'] = tag['href']
+            if tag.name == "link":
+                url = urljoin(site.url, tag["href"])
+                if tag["href"].startswith("http"):
+                    tag["href"] = tag["href"]
                 else:
-                    tag['href'] = url
-            elif tag.name == 'script':
-                url = urljoin(site.url, tag['href'])
-                if tag['href'].startswith('http'):
-                    tag['href'] = tag['href']
+                    tag["href"] = url
+            elif tag.name == "script":
+                url = urljoin(site.url, tag["href"])
+                if tag["href"].startswith("http"):
+                    tag["href"] = tag["href"]
                 else:
-                    tag['href'] = url
+                    tag["href"] = url
             else:
-                if tag['href'].startswith(site.url) or not tag['href'].startswith('http'):
-                    tag['href'] = f"/vpn/{user_site_name.rstrip('/')}{tag['href']}"
+                if tag["href"].startswith(site.url) or not tag[
+                    "href"
+                ].startswith("http"):
+                    tag[
+                        "href"
+                    ] = f"/vpn/{user_site_name.rstrip('/')}{tag['href']}"
                 else:
-                    tag['href'] = tag['href']
+                    tag["href"] = tag["href"]
 
         for tag in soup.find_all(src=True):
-            url = urljoin(site.url, tag['src'])
-            tag['src'] = url
+            url = urljoin(site.url, tag["src"])
+            tag["src"] = url
 
         modified_content = str(soup)
 
-        data_sent = len(response.request.body) / (1024 * 1024) if response.request.body else 0.0
-        data_received = len(response.content) / (1024 * 1024) if response.content else 0.0
+        data_sent = (
+            len(response.request.body) / (1024 * 1024)
+            if response.request.body
+            else 0.0
+        )
+        data_received = (
+            len(response.content) / (1024 * 1024) if response.content else 0.0
+        )
 
         site.data_sent += round(data_sent, 3)
         site.data_received += round(data_received, 3)
@@ -113,9 +127,8 @@ def site_proxy(request, user_site_name, routes_on_original_site=""):
     except Site.DoesNotExist:
         print(f"Site not found for user: {user_site_name}")
         return HttpResponse(
-            f"Site not found\n"
-            f"{user_site_name}=={routes_on_original_site}",
-            status=404
+            f"Site not found\n" f"{user_site_name}=={routes_on_original_site}",
+            status=404,
         )
     except Exception as e:
         print(f"Error: {str(e)}")

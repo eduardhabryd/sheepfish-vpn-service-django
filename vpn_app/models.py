@@ -15,4 +15,4 @@ class Site(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['-last_view']
+        ordering = ["-last_view"]
