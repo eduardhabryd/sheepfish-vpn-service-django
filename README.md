@@ -13,6 +13,7 @@ VPN Site Proxy is a Django web application that enables users to create a person
 1. Clone the repository: `git clone https://github.com/eduardhabryd/sheepfish-vpn-service-django.git`
 2. Navigate to the project directory: `cd sheepfish-vpn-service-django`
 3. Build and run the Docker image: `docker-compose up --build`
+4. Access the website at `http://127.0.0.1:8000/`
 
 
 # 📖 Features
