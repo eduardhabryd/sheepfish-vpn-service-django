@@ -47,7 +47,7 @@
 <div class="register-container">
     <div class="card">
         <h2 class="mb-4">Register</h2>
-        <form method="post" action="{% url 'register' %}" class="mb-3">
+        <form method="post" action="{% url 'users:register' %}" class="mb-3">
             {% csrf_token %}
             <div class="mb-3">
                 {{ form.errors }}
