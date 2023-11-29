@@ -1,4 +1,5 @@
 import requests
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -12,10 +13,9 @@ from vpn_app.models import Site
 from vpn_app.forms import SiteSearchForm, SiteCreateForm, SiteUpdateForm
 
 
-class SiteListView(generic.ListView):
+class SiteListView(LoginRequiredMixin, generic.ListView):
     model = Site
     template_name = "vpn_app/index.html"
-    queryset = Site.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -29,12 +29,14 @@ class SiteListView(generic.ListView):
         form = SiteSearchForm(self.request.GET)
         if form.is_valid():
             site_name = form.cleaned_data["site_name"]
-            return Site.objects.filter(name__icontains=site_name)
+            return Site.objects.filter(
+                user=self.request.user, name__icontains=site_name
+            )
 
-        return self.queryset
+        return Site.objects.filter(user=self.request.user)
 
 
-class SiteCreateView(generic.CreateView):
+class SiteCreateView(LoginRequiredMixin, generic.CreateView):
     model = Site
     template_name = "vpn_app/add_site.html"
     form_class = SiteCreateForm
@@ -45,19 +47,20 @@ class SiteCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-class SiteUpdateView(generic.UpdateView):
+class SiteUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Site
     template_name = "vpn_app/add_site.html"
     form_class = SiteUpdateForm
     success_url = reverse_lazy("vpn_app:index")
 
 
-class SiteDeleteView(generic.DeleteView):
+class SiteDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Site
     template_name = "vpn_app/delete_site.html"
     success_url = reverse_lazy("vpn_app:index")
 
 
+@login_required
 @csrf_exempt
 def site_proxy(request, user_site_name, routes_on_original_site=""):
     try:
