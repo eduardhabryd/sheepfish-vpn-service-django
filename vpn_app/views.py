@@ -88,13 +88,25 @@ def site_proxy(request, user_site_name, routes_on_original_site=""):
                 else:
                     tag['href'] = url
             else:
-                tag['href'] = f"/vpn/{user_site_name.rstrip('/')}{tag['href']}"
+                if tag['href'].startswith(site.url) or not tag['href'].startswith('http'):
+                    tag['href'] = f"/vpn/{user_site_name.rstrip('/')}{tag['href']}"
+                else:
+                    tag['href'] = tag['href']
 
         for tag in soup.find_all(src=True):
             url = urljoin(site.url, tag['src'])
             tag['src'] = url
 
         modified_content = str(soup)
+
+        data_sent = len(response.request.body) / (1024 * 1024) if response.request.body else 0.0
+        data_received = len(response.content) / (1024 * 1024) if response.content else 0.0
+
+        site.data_sent += round(data_sent, 3)
+        site.data_received += round(data_received, 3)
+
+        site.page_views += 1
+        site.save()
 
         return HttpResponse(modified_content)
 
