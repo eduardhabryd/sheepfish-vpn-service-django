@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-from users.forms import CustomUserCreationForm
+from django.urls import reverse_lazy
+from django.views import generic
+
+from users.forms import CustomUserCreationForm, CustomUserUpdateForm
 from django.contrib.auth import login, logout
+
+from users.models import User
 
 
 def register(request):
@@ -31,3 +36,10 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('vpn_app:index')
+
+
+class UserUpdateView(generic.UpdateView):
+    model = User
+    form_class = CustomUserUpdateForm
+    success_url = reverse_lazy('vpn_app:index')
+    template_name = 'registration/update.html'
