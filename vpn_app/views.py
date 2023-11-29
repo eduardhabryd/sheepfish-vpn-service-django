@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import urlparse, urlunparse, urljoin, quote
+from bs4 import BeautifulSoup
 
 from vpn_app.models import Site
 from vpn_app.forms import SiteSearchForm, SiteCreateForm, SiteUpdateForm
@@ -71,10 +72,29 @@ def site_proxy(request, user_site_name, routes_on_original_site=""):
         print(f"Original URL: {original_url}")
 
         response = requests.get(original_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        modified_url = f"/vpn/{user_site_name.rstrip('/')}"
+        for tag in soup.find_all(href=True):
+            if tag.name == 'link':
+                url = urljoin(site.url, tag['href'])
+                if tag['href'].startswith('http'):
+                    tag['href'] = tag['href']
+                else:
+                    tag['href'] = url
+            elif tag.name == 'script':
+                url = urljoin(site.url, tag['href'])
+                if tag['href'].startswith('http'):
+                    tag['href'] = tag['href']
+                else:
+                    tag['href'] = url
+            else:
+                tag['href'] = f"/vpn/{user_site_name.rstrip('/')}{tag['href']}"
 
-        modified_content = response.text.replace('href="', f'href="{modified_url}')
+        for tag in soup.find_all(src=True):
+            url = urljoin(site.url, tag['src'])
+            tag['src'] = url
+
+        modified_content = str(soup)
 
         return HttpResponse(modified_content)
 
