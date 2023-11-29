@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>VPN Service - Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+    />
+    <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css"
+            rel="stylesheet"
+    />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .register-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .card {
+            padding: 5rem;
+            width: 50%;
+            text-align: center;
+        }
+
+        .btn-register {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="register-container">
+    <div class="card">
+        <h2 class="mb-4">Update Profile</h2>
+        <form method="post" action="{% url 'users:profile' user.pk %}" class="mb-3">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.email.id_for_label }}" class="form-label fw-bold d-block">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold d-block">Fist Name</label>
+                {{ form.first_name }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold d-block">Last Name</label>
+                {{ form.last_name }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-register">Update</button>
+        </form>
+    </div>
+</div>
+{% include "includes/go_back_button.html" %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"
+></script>
+</body>
+
+</html>
