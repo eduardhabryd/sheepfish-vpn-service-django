@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy
@@ -33,12 +35,13 @@ def user_login(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
+@login_required
 def user_logout(request):
     logout(request)
     return redirect('vpn_app:index')
 
 
-class UserUpdateView(generic.UpdateView):
+class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = User
     form_class = CustomUserUpdateForm
     success_url = reverse_lazy('vpn_app:index')
